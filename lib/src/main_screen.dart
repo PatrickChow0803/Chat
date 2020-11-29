@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
@@ -27,13 +28,26 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _signedIn = false;
+
   void _signIn() async {
     try {
       final creds = await AuthProvider().signInWithGoogle();
       print(creds);
+
+      setState(() {
+        _signedIn = true;
+      });
     } catch (e) {
       print('Login Failed: $e');
     }
+  }
+
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    setState(() {
+      _signedIn = false;
+    });
   }
 
   @override
@@ -42,6 +56,14 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
         centerTitle: true,
+        actions: [
+          if (_signedIn)
+            IconButton(
+              padding: EdgeInsets.symmetric(horizontal: 15),
+              icon: Icon(Icons.logout),
+              onPressed: _signOut,
+            )
+        ],
       ),
 //      backgroundColor: Color(0xffdee2d6),
       body: Center(
@@ -55,13 +77,14 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
               ),
             ),
-            Container(
-              child: SignInButton(
-                Buttons.Google,
-                onPressed: _signIn,
-                padding: EdgeInsets.all(3),
-              ),
-            )
+            if (!_signedIn)
+              Container(
+                child: SignInButton(
+                  Buttons.Google,
+                  onPressed: _signIn,
+                  padding: EdgeInsets.all(3),
+                ),
+              )
           ],
         ),
       ),

@@ -8,7 +8,7 @@ class _AndroidAuthProvider implements AuthProviderBase {
   Future<FirebaseApp> initialize() async {
     return await Firebase.initializeApp(
         // Name of the app in Firebase
-        name: 'Chat',
+        name: 'chat-4b40e',
         // Options taken from the web folder -> index.html -> copy paste the script on the bottom onto here
         // The appId you get from Firebase -> Project Settings -> Android App -> App Id
         options: FirebaseOptions(
