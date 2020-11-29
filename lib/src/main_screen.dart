@@ -1,3 +1,4 @@
+import 'package:chat/src/widgets/message_form.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
@@ -73,11 +74,13 @@ class _MyHomePageState extends State<MyHomePage> {
             Expanded(
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.blue,
+                  color: Colors.grey[200],
                 ),
               ),
             ),
-            if (!_signedIn)
+            if (_signedIn)
+              MessageForm()
+            else
               Container(
                 child: SignInButton(
                   Buttons.Google,
