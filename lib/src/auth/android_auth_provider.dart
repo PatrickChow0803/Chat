@@ -7,7 +7,10 @@ class _AndroidAuthProvider implements AuthProviderBase {
   @override
   Future<FirebaseApp> initialize() async {
     return await Firebase.initializeApp(
+        // Name of the app in Firebase
         name: 'Chat',
+        // Options taken from the web folder -> index.html -> copy paste the script on the bottom onto here
+        // The appId you get from Firebase -> Project Settings -> Android App -> App Id
         options: FirebaseOptions(
             apiKey: "AIzaSyAXVQH9ygn9EiKCz1OYxoX2oeN-_bN9YXU",
             authDomain: "chat-4b40e.firebaseapp.com",
@@ -35,7 +38,9 @@ class _AndroidAuthProvider implements AuthProviderBase {
       idToken: googleAuth.idToken,
     );
 
-    // Once signed in, return the UserCredential
+    // Once signed in, return the UserCredentials, which contains a lot of information about the user
     return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }
+
+class AuthProvider extends _AndroidAuthProvider {}

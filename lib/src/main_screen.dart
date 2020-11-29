@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 
+import 'auth/android_auth_provider.dart';
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -25,6 +27,15 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  void _signIn() async {
+    try {
+      final creds = await AuthProvider().signInWithGoogle();
+      print(creds);
+    } catch (e) {
+      print('Login Failed: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Container(
               child: SignInButton(
                 Buttons.Google,
-                onPressed: () {},
+                onPressed: _signIn,
                 padding: EdgeInsets.all(3),
               ),
             )
