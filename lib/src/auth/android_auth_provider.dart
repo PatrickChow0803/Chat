@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'auth_provider_base.dart';
 
 class _AndroidAuthProvider implements AuthProviderBase {
@@ -20,7 +21,21 @@ class _AndroidAuthProvider implements AuthProviderBase {
 
   @override
   Future<UserCredential> signInWithGoogle() async {
-    // TODO: implement signInWithGoogle
-    throw UnimplementedError();
+    // Trigger the authentication flow
+    // This displays the login prompt in the device
+    final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
+
+    // Obtain the auth details from the request
+    // Once signed in, can obtain sign in details with contains credentials
+    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+
+    // Create a new credential which gets passed into FirebaseAuth
+    final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth.accessToken,
+      idToken: googleAuth.idToken,
+    );
+
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }
