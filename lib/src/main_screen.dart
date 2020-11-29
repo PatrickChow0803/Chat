@@ -1,4 +1,5 @@
 import 'package:chat/src/widgets/message_form.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
@@ -72,14 +73,26 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                ),
-              ),
-            ),
+                child: StreamBuilder<QuerySnapshot>(
+              // GET THE SNAPSHOTS FROM FIRESTORE'S CHAT_MESSAGE COLLECTION
+              stream: FirebaseFirestore.instance.collection('chat_messages').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(snapshot.data.docs[0].data().toString());
+                }
+
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              },
+            )),
             if (_signedIn)
-              MessageForm()
+              MessageForm(
+                // value is the callback value from MessageForm
+                onSubmit: (value) {
+                  print(value);
+                },
+              )
             else
               Container(
                 child: SignInButton(
