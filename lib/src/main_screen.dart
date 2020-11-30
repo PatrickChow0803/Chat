@@ -102,6 +102,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    if (snapshot.data.docs.isEmpty) {
+                      return Center(
+                        child: Text('No Messages'),
+                      );
+                    }
                     // Displays all of the data for the first doc
 //                  return Text(snapshot.data.docs[0].data().toString());
                     return MessageWall(
