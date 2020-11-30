@@ -66,6 +66,10 @@ class _MyHomePageState extends State<MyHomePage> {
     }
   }
 
+  void _deleteMessage(String docId) async {
+    await FirebaseFirestore.instance.collection('chat_messages').doc(docId).delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,6 +106,7 @@ class _MyHomePageState extends State<MyHomePage> {
 //                  return Text(snapshot.data.docs[0].data().toString());
                     return MessageWall(
                       messages: snapshot.data.docs,
+                      onDelete: _deleteMessage,
                     );
                   }
 

@@ -4,10 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+// This is the widget for the user them self
 class MessageWall extends StatelessWidget {
   final List<QueryDocumentSnapshot> messages;
 
-  const MessageWall({Key key, this.messages}) : super(key: key);
+  // Data Type is String since that's the data type of the Document's ID
+  final ValueChanged<String> onDelete;
+
+  const MessageWall({Key key, this.messages, this.onDelete}) : super(key: key);
 
   // If the author were to send multiple messages, prevent the avatar from displaying from future messages
   bool shouldDisplayAvatar(int index) {
@@ -31,9 +35,18 @@ class MessageWall extends StatelessWidget {
 
         // Check to see if the message that is about to be sent is from the same user or not
         if (user != null && user.uid == data['author_id']) {
-          return ChatMessage(
-            index: index,
-            data: data,
+          return Dismissible(
+            onDismissed: (_) {
+              onDelete(messages[index].id);
+            },
+            key: ValueKey(data['timestamp']),
+            child: ChatMessage(
+              index: index,
+              data: data,
+            ),
+            background: Container(
+              color: Colors.red,
+            ),
           );
         }
         return ChatMessageOther(
