@@ -69,44 +69,47 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 //      backgroundColor: Color(0xffdee2d6),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-                child: StreamBuilder<QuerySnapshot>(
-              // GET THE SNAPSHOTS FROM FIRESTORE'S CHAT_MESSAGE COLLECTION
-              stream: FirebaseFirestore.instance.collection('chat_messages').snapshots(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  // Displays all of the data for the first doc
+      body: Container(
+        color: Colors.grey[300],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                // GET THE SNAPSHOTS FROM FIRESTORE'S CHAT_MESSAGE COLLECTION
+                stream: FirebaseFirestore.instance.collection('chat_messages').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    // Displays all of the data for the first doc
 //                  return Text(snapshot.data.docs[0].data().toString());
-                  return MessageWall(
-                    messages: snapshot.data.docs,
-                  );
-                }
+                    return MessageWall(
+                      messages: snapshot.data.docs,
+                    );
+                  }
 
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              },
-            )),
-            if (_signedIn)
-              MessageForm(
-                // value is the callback value from MessageForm
-                onSubmit: (value) {
-                  print(value);
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
                 },
-              )
-            else
-              Container(
-                child: SignInButton(
-                  Buttons.Google,
-                  onPressed: _signIn,
-                  padding: EdgeInsets.all(3),
-                ),
-              )
-          ],
+              )),
+              if (_signedIn)
+                MessageForm(
+                  // value is the callback value from MessageForm
+                  onSubmit: (value) {
+                    print(value);
+                  },
+                )
+              else
+                Container(
+                  child: SignInButton(
+                    Buttons.Google,
+                    onPressed: _signIn,
+                    padding: EdgeInsets.all(3),
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );
