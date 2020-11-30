@@ -1,3 +1,4 @@
+import 'package:chat/src/widgets/chat_message.dart';
 import 'package:chat/src/widgets/chat_message_other.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,11 +26,18 @@ class MessageWall extends StatelessWidget {
     return ListView.builder(
       itemCount: messages.length,
       itemBuilder: (context, index) {
-//        return ListTile(
-//          title: Text(messages[index].data()['value']),
-//        );
+        final data = messages[index].data();
+        final user = FirebaseAuth.instance.currentUser;
+
+        // Check to see if the message that is about to be sent is from the same user or not
+        if (user != null && user.uid == data['author_id']) {
+          return ChatMessage(
+            index: index,
+            data: data,
+          );
+        }
         return ChatMessageOther(
-          data: messages[index].data(),
+          data: data,
           index: index,
           showAvatar: shouldDisplayAvatar(index),
         );

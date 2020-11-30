@@ -24,6 +24,9 @@ class _AndroidAuthProvider implements AuthProviderBase {
 
   @override
   Future<UserCredential> signInWithGoogle() async {
+    // This stops the automatic logging in with the same user
+    await GoogleSignIn().signOut();
+
     // Trigger the authentication flow
     // This displays the login prompt in the device
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
