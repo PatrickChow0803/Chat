@@ -1,4 +1,5 @@
 import 'package:chat/src/widgets/message_form.dart';
+import 'package:chat/src/widgets/message_wall.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +79,11 @@ class _MyHomePageState extends State<MyHomePage> {
               stream: FirebaseFirestore.instance.collection('chat_messages').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return Text(snapshot.data.docs[0].data().toString());
+                  // Displays all of the data for the first doc
+//                  return Text(snapshot.data.docs[0].data().toString());
+                  return MessageWall(
+                    messages: snapshot.data.docs,
+                  );
                 }
 
                 return Center(

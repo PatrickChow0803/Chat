@@ -62,10 +62,9 @@ class _MessageFormState extends State<MessageForm> {
               ),
             ),
             // If there's no message, prevent the onPressed functionality from working
-            onPressed: _message.trim() == null || _message.trim().isEmpty ? null : _onPressed,
-            fillColor: _message.trim() == null || _message.trim().isEmpty
-                ? Colors.grey
-                : Theme.of(context).primaryColor,
+            onPressed: _message == null || _message.isEmpty ? null : _onPressed,
+            fillColor:
+                _message == null || _message.isEmpty ? Colors.grey : Theme.of(context).primaryColor,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
           )
         ],
