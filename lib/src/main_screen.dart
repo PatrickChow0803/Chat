@@ -53,6 +53,19 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _addMessage(String value) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance.collection('chat_messages').add({
+        'author': user.displayName ?? 'Anonymous',
+        'author_id': user.uid,
+        'photo_url': user.photoURL ?? 'https://placehold.it/100x100',
+        'timestamp': Timestamp.now().millisecondsSinceEpoch,
+        'value': value,
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -80,6 +93,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 // GET THE SNAPSHOTS FROM FIRESTORE'S CHAT_MESSAGE COLLECTION
                 stream: FirebaseFirestore.instance
                     .collection('chat_messages')
+                    // SORT THE MESSAGES BY TIMESTAMP
                     .orderBy('timestamp')
                     .snapshots(),
                 builder: (context, snapshot) {
@@ -98,11 +112,8 @@ class _MyHomePageState extends State<MyHomePage> {
               )),
               if (_signedIn)
                 MessageForm(
-                  // value is the callback value from MessageForm
-                  onSubmit: (value) {
-                    print(value);
-                  },
-                )
+                    // value is the callback value from MessageForm
+                    onSubmit: _addMessage)
               else
                 Container(
                   child: SignInButton(
