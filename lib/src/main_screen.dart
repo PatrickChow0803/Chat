@@ -1,4 +1,6 @@
 import 'package:chat/src/widgets/message_form.dart';
+import 'package:chat/src/widgets/message_wall.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
@@ -51,6 +53,23 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _addMessage(String value) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      FirebaseFirestore.instance.collection('chat_messages').add({
+        'author': user.displayName ?? 'Anonymous',
+        'author_id': user.uid,
+        'photo_url': user.photoURL ?? 'https://placehold.it/100x100',
+        'timestamp': Timestamp.now().millisecondsSinceEpoch,
+        'value': value,
+      });
+    }
+  }
+
+  void _deleteMessage(String docId) async {
+    await FirebaseFirestore.instance.collection('chat_messages').doc(docId).delete();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,28 +86,54 @@ class _MyHomePageState extends State<MyHomePage> {
         ],
       ),
 //      backgroundColor: Color(0xffdee2d6),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                ),
-              ),
-            ),
-            if (_signedIn)
-              MessageForm()
-            else
-              Container(
-                child: SignInButton(
-                  Buttons.Google,
-                  onPressed: _signIn,
-                  padding: EdgeInsets.all(3),
-                ),
-              )
-          ],
+      body: Container(
+        color: Colors.grey[300],
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Expanded(
+                  child: StreamBuilder<QuerySnapshot>(
+                // GET THE SNAPSHOTS FROM FIRESTORE'S CHAT_MESSAGE COLLECTION
+                stream: FirebaseFirestore.instance
+                    .collection('chat_messages')
+                    // SORT THE MESSAGES BY TIMESTAMP
+                    .orderBy('timestamp')
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data.docs.isEmpty) {
+                      return Center(
+                        child: Text('No Messages'),
+                      );
+                    }
+                    // Displays all of the data for the first doc
+//                  return Text(snapshot.data.docs[0].data().toString());
+                    return MessageWall(
+                      messages: snapshot.data.docs,
+                      onDelete: _deleteMessage,
+                    );
+                  }
+
+                  return Center(
+                    child: CircularProgressIndicator(),
+                  );
+                },
+              )),
+              if (_signedIn)
+                MessageForm(
+                    // value is the callback value from MessageForm
+                    onSubmit: _addMessage)
+              else
+                Container(
+                  child: SignInButton(
+                    Buttons.Google,
+                    onPressed: _signIn,
+                    padding: EdgeInsets.all(3),
+                  ),
+                )
+            ],
+          ),
         ),
       ),
     );

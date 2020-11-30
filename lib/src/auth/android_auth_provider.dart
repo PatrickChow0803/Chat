@@ -6,24 +6,27 @@ import 'auth_provider_base.dart';
 class _AndroidAuthProvider implements AuthProviderBase {
   @override
   Future<FirebaseApp> initialize() async {
-      return await Firebase.initializeApp(
-          // Name of the app in Firebase
-          name: 'Chat',
-          // Options taken from the web folder -> index.html -> copy paste the script on the bottom onto here
-          // The appId you get from Firebase -> Project Settings -> Android App -> App Id
-          options: FirebaseOptions(
-              apiKey: "AIzaSyAXVQH9ygn9EiKCz1OYxoX2oeN-_bN9YXU",
-              authDomain: "chat-4b40e.firebaseapp.com",
-              databaseURL: "https://chat-4b40e.firebaseio.com",
-              projectId: "chat-4b40e",
-              storageBucket: "chat-4b40e.appspot.com",
-              messagingSenderId: "883326991940",
-              appId: "1:883326991940:android:767271c96403bf9a444611",
-              measurementId: "G-XYKM9GHNBM"));
+    return await Firebase.initializeApp(
+        // Name of the app in Firebase
+        name: 'chat',
+        // Options taken from the web folder -> index.html -> copy paste the script on the bottom onto here
+        // The appId you get from Firebase -> Project Settings -> Android App -> App Id
+        options: FirebaseOptions(
+            apiKey: "AIzaSyAXVQH9ygn9EiKCz1OYxoX2oeN-_bN9YXU",
+            authDomain: "chat-4b40e.firebaseapp.com",
+            databaseURL: "https://chat-4b40e.firebaseio.com",
+            projectId: "chat-4b40e",
+            storageBucket: "chat-4b40e.appspot.com",
+            messagingSenderId: "883326991940",
+            appId: "1:883326991940:android:767271c96403bf9a444611",
+            measurementId: "G-XYKM9GHNBM"));
   }
 
   @override
   Future<UserCredential> signInWithGoogle() async {
+    // This stops the automatic logging in with the same user
+    await GoogleSignIn().signOut();
+
     // Trigger the authentication flow
     // This displays the login prompt in the device
     final GoogleSignInAccount googleUser = await GoogleSignIn().signIn();
