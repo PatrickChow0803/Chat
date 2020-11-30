@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 class ChatMessageOther extends StatelessWidget {
   final int index;
   final Map<String, dynamic> data;
+  final bool showAvatar;
 
-  ChatMessageOther({this.index, this.data});
+  ChatMessageOther({this.index, this.data, this.showAvatar = true});
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +19,12 @@ class ChatMessageOther extends StatelessWidget {
         // makes it so that the widgets line up to the top
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            backgroundImage: NetworkImage(data['photo_url']),
-          ),
+          if (showAvatar)
+            CircleAvatar(
+              backgroundImage: NetworkImage(data['photo_url']),
+            )
+          else
+            SizedBox(width: 40),
           SizedBox(width: 10.0),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 10, vertical: 12),

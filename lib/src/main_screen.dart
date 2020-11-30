@@ -78,7 +78,10 @@ class _MyHomePageState extends State<MyHomePage> {
               Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                 // GET THE SNAPSHOTS FROM FIRESTORE'S CHAT_MESSAGE COLLECTION
-                stream: FirebaseFirestore.instance.collection('chat_messages').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('chat_messages')
+                    .orderBy('timestamp')
+                    .snapshots(),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     // Displays all of the data for the first doc
